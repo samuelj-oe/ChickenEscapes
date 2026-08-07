@@ -1,12 +1,13 @@
 # ChickenEscapes
 
-ChickenEscapes ist ein kleines Spiel in dem sie sich gegen die ausgebrochenen verrücktesten Hühner verteidigen müssen.
+ChickenEscapes ist ein kleines Spiel in dem sie sich gegen die ausgebrochenen, verrücktesten Hühner verteidigen müssen.
 
 ## Features
 
 - Multiplayer
 - Public/Self-hosted Server
 - mehrere Version durch den Launcher installieren
+- 
 ## Installation
 
 Unter Windows:
@@ -26,15 +27,17 @@ Danach können sie das den Launcher durch ausführen der Datei launcher.py start
 python path/to/game/launcher.py
 ```
 Der Launcher wird ihnen die Installation und das Ausführen mehreren Versionen des Spiels ermöglichen. Wichtig ist, dass die Version ihres Spiels und dem Spiel, dem Sie beitreten möchten übereinstimmt.
+
 ## Screenshots
 
-![App Screenshot](https://dummyimage.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](https://dummyimage.com/468x300?text=Screenshots+Soon!)
 
 
 ## Entwickler
 
-- [@Samuel](https://www.github.com/samuelj-oe)
-- [@Jona](https://www.github.com/jona_platzhalter)
+- [Samuel](https://www.github.com/samuelj-oe)
+- [Jona](https://www.github.com/jona_platzhalter)
+
 ## Copyright
 
 [MIT-License](https://github.com/samuelj-oe/ChickenEscapes/blob/main/LICENSE)
