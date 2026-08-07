@@ -7,7 +7,7 @@ ChickenEscapes ist ein kleines Spiel in dem sie sich gegen die ausgebrochenen, v
 - Multiplayer
 - Public/Self-hosted Server
 - mehrere Version durch den Launcher installieren
-- 
+
 ## Installation
 
 Unter Windows:
