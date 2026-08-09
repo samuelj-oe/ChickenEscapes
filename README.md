@@ -12,7 +12,7 @@ ChickenEscapes ist ein kleines Spiel in dem sie sich gegen die ausgebrochenen, v
 
 Unter Windows:
 
-Laden sie unter "Releases den neuesten Windows Installer herunter und führen sie den Installer aus. Er wird eine Verknüpfung zum Launcher auf dem Desktop erstellen.
+Laden sie unter "Releases" den neuesten Windows Installer herunter und führen sie den Installer aus. Er wird eine Verknüpfung zum Launcher auf dem Desktop erstellen.
 
 Unter Linux:
 
