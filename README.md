@@ -1,6 +1,6 @@
 # ChickenEscapes
 
-ChickenEscapes ist ein kleines Spiel in dem sie sich gegen die ausgebrochenen, verrücktesten Hühner verteidigen müssen.
+ChickenEscapes ist ein kleines Spiel in dem Sie sich gegen die ausgebrochenen, verrücktesten Hühner verteidigen müssen.
 
 ## Features
 
@@ -12,13 +12,13 @@ ChickenEscapes ist ein kleines Spiel in dem sie sich gegen die ausgebrochenen, v
 
 Unter Windows:
 
-Laden sie unter "Releases" den neuesten Windows Installer herunter und führen sie den Installer aus. Er wird eine Verknüpfung zum Launcher auf dem Desktop erstellen.
+Laden Sie unter "Releases" den neuesten Windows Installer herunter und führen sie den Installer aus. Er wird eine Verknüpfung zum Launcher auf dem Desktop erstellen.
 
 Unter Linux:
 
-Stellen sie sicher, dass sie Python 3.12 oder neuer Installiert haben.
+Stellen Sie sicher, dass Sie Python 3.12 oder neuer Installiert haben.
 
-Installieren sie folgende Python-Module:
+Installieren Sie folgende Python-Module:
 
 - websockets
 - pygame
@@ -26,11 +26,11 @@ Installieren sie folgende Python-Module:
 ```bash
 python -m pip install websockets pygame
 ```
-Danach können sie das den Launcher durch ausführen der Datei launcher.py starten:
+Danach können Sie das den Launcher durch ausführen der Datei launcher.py starten:
 ```bash
 python path/to/game/launcher.py
 ```
-Der Launcher wird ihnen die Installation und das Ausführen mehreren Versionen des Spiels ermöglichen. Wichtig ist, dass die Version ihres Spiels und dem Spiel, dem Sie beitreten möchten übereinstimmt.
+Der Launcher wird Ihnen die Installation und das Ausführen mehreren Versionen des Spiels ermöglichen. Wichtig ist, dass die Version Ihres Spiels und dem Spiel, dem Sie beitreten möchten übereinstimmt.
 
 ## Screenshots
 
