@@ -19,6 +19,10 @@ Unter Linux:
 Stellen sie sicher, dass sie Python 3.12 oder neuer Installiert haben.
 
 Installieren sie folgende Python-Module:
+
+- websockets
+- pygame
+
 ```bash
 python -m pip install websockets pygame
 ```
