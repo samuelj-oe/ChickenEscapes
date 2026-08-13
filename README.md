@@ -34,7 +34,7 @@ Der Launcher wird ihnen die Installation und das Ausführen mehreren Versionen d
 
 ## Screenshots
 
-![App Screenshot](https://dummyimage.com/468x300?text=Screenshots+Soon!)
+![App Screenshot](https://dummyimage.com/468x300?text=Screenshots+später!)
 
 
 ## Entwickler
