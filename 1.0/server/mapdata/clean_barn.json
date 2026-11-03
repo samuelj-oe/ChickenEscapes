@@ -1,0 +1,26 @@
+{
+    "name": "Clean Barn",
+    "theme": "clean_barn",
+    "plattforms": 5,
+    "background": "stall.png",
+    "1": {
+        "texture": "stroh.png",
+        "size": [0, 72, 800, 102]
+    },
+    "2": {
+        "texture": "stroh.png",
+        "size": [115, 190, 335, 216]
+    },
+    "3": {
+        "texture": "stroh.png",
+        "size": [465, 285, 690, 311]
+    },
+    "4": {
+        "texture": "stroh.png",
+        "size": [220, 385, 445, 411]
+    },
+    "5": {
+        "texture": "stroh.png",
+        "size": [590, 475, 800, 501]
+    }
+}

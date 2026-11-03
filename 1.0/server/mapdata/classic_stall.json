@@ -1,0 +1,17 @@
+{
+    "name": "Classic Stall",
+    "plattforms": 3,
+    "background": "stall.png",
+    "1": {
+        "texture": "stroh.png",
+        "size": [100, 100, 700, 500]
+    },
+    "2": {
+        "texture": "stroh.png",
+        "size": [500, 300, 800, 500]
+    },
+    "3": {
+        "texture": "stroh.png",
+        "size": [600, 200, 400, 600]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "spawnx" : 75,
+    "spawny" : 102,
+    "gravity": 1,
+    "speed": 1,
+    "damage": 1,
+    "welcome_message": "Willkommen auf einem ChickenEscapes Server!",
+    "waves_int": 1,
+    "wave": {
+        "1": {
+            "npcs" : {
+                "chicken_normal": 1
+            }
+       }
+    },
+    "map_file": "classic_stal.json"
+}
