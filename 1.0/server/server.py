@@ -50,8 +50,13 @@ class Server():
             print("[Server] Spieldaten geladen!")
 
             print("[Server] Lade Animationen ...")
-            animations_file = open(f"{xpath}/animations.json", "r")
-            self.animations = json.load(animations_file)
+            animations_path = os.path.join(xpath, "animations.json")
+            if os.path.exists(animations_path):
+                with open(animations_path, "r", encoding="utf-8") as animations_file:
+                    self.animations = json.load(animations_file)
+            else:
+                self.animations = {}
+                print("[Server] Keine animations.json gefunden; fahre ohne Serveranimationen fort.")
             print("[Server] Animationen geladen!")
 
             self.join_data = {

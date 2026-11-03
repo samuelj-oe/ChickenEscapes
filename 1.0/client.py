@@ -601,8 +601,6 @@ class GameClient:
                 self.local_server = subprocess.Popen(
                     [sys.executable, str(server_script)],
                     cwd=str(server_script.parent),
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
                 )
             except OSError as error:
                 self.screen_name = "single"
@@ -616,16 +614,26 @@ class GameClient:
         self.network_thread.start()
 
     def network_worker(self, address, port, stop_event, incoming, outgoing, retry):
-        asyncio.run(self.network_session(address, port, stop_event, incoming, outgoing, retry))
+        try:
+            asyncio.run(self.network_session(address, port, stop_event, incoming, outgoing, retry))
+        except Exception as error:
+            if not stop_event.is_set():
+                incoming.put(("error", f"Verbindungsfehler: {error}"))
 
     async def network_session(self, address, port, stop_event, incoming, outgoing, retry):
         uri = f"ws://{address}:{port}"
-        attempts = 20 if retry else 1
-        for attempt in range(attempts):
+        deadline = asyncio.get_running_loop().time() + (12 if retry else 2)
+        while True:
             if stop_event.is_set():
                 return
+            if retry and self.local_server and self.local_server.poll() is not None:
+                incoming.put((
+                    "error",
+                    f"Der lokale Server wurde beim Start beendet (Exit-Code {self.local_server.returncode}).",
+                ))
+                return
             try:
-                async with websockets.connect(uri, open_timeout=2) as websocket:
+                async with websockets.connect(uri, open_timeout=1.5) as websocket:
                     await websocket.send(json.dumps({
                         "type": "join_req",
                         "version": VERSION,
@@ -651,7 +659,7 @@ class GameClient:
                         incoming.put(("message", json.loads(message)))
                     return
             except (OSError, websockets.WebSocketException, asyncio.TimeoutError, ValueError) as error:
-                if retry and attempt + 1 < attempts and not stop_event.is_set():
+                if retry and asyncio.get_running_loop().time() < deadline and not stop_event.is_set():
                     await asyncio.sleep(0.25)
                     continue
                 incoming.put(("error", self.connection_error(error)))
