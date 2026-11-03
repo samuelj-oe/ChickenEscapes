@@ -1,10 +1,14 @@
+import platform
 import subprocess
 from pathlib import Path
 import sys
 
 import pygame
 
-ROOT = Path(__file__).resolve().parent
+if getattr(sys, "frozen", False):
+    ROOT = Path(sys.executable).resolve().parent
+else:
+    ROOT = Path(__file__).resolve().parent
 WIDTH, HEIGHT = 800, 600
 BACKGROUND = (205, 164, 52)
 PANEL = (231, 191, 76)
@@ -53,17 +57,42 @@ class Launcher:
         if ROOT not in base_path.parents:
             self.message = "Ungültiger Versionspfad."
             return
-        exe_path = base_path / "client.exe"
         py_path = base_path / "client.py"
+        if not py_path.is_file():
+            self.message = f"client.py wurde in {base_path} nicht gefunden."
+            return
+
         try:
-            if exe_path.exists():
-                self.game_process = subprocess.Popen([str(exe_path)], cwd=str(base_path), shell=False)
-            elif py_path.exists():
-                self.game_process = subprocess.Popen([sys.executable, str(py_path)], cwd=str(base_path), shell=False)
-            else:
-                self.message = f"Keine client.exe oder client.py in {base_path} gefunden."
+            interpreter = self.virtualenv_python()
+        except (OSError, ValueError) as error:
+            self.message = str(error)
+            return
+
+        try:
+            self.game_process = subprocess.Popen(
+                [str(interpreter), str(py_path)],
+                cwd=str(base_path),
+                shell=False,
+            )
         except OSError as error:
             self.message = f"Version konnte nicht gestartet werden: {error}"
+
+    @staticmethod
+    def virtualenv_python(system=None, root=ROOT):
+        system = system or platform.system()
+        if system == "Windows":
+            interpreter = root / "WinVenv" / "Scripts" / "python.exe"
+        elif system == "Linux":
+            interpreter = root / "LxVenv" / "bin" / "python"
+        else:
+            raise ValueError(f"Nicht unterstütztes Betriebssystem: {system}")
+
+        if not interpreter.is_file():
+            raise FileNotFoundError(
+                f"Python-Umgebung nicht gefunden: {interpreter}. "
+                "Bitte die passende virtuelle Umgebung im Projektordner erstellen."
+            )
+        return interpreter
 
     def draw(self):
         self.screen.fill(BACKGROUND)

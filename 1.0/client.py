@@ -264,7 +264,7 @@ class GameClient:
 
     def draw_singleplayer(self):
         self.draw_menu_card((160, 75, 480, 430))
-        self.draw_text("SPIELMODUS", (WIDTH // 2, 125), BUTTON_COLOR, self.eyebrow_font, center=True)
+        self.draw_text("OFFLINE/ONLINE", (WIDTH // 2, 125), BUTTON_COLOR, self.eyebrow_font, center=True)
         self.draw_text("Spiel erstellen", (WIDTH // 2, 166), INK, self.title_font, center=True)
         self.draw_button("home", "Zurück", (190, 100, 92, 38), self.small_font)
         self.draw_input("name", "Dein Name:", self.name, (250, 239, 300, 42))
