@@ -36,12 +36,6 @@ Der Launcher wird Ihnen die Installation und das Ausführen mehreren Versionen d
 
 ![App Screenshot](https://dummyimage.com/468x300?text=Screenshots+später!)
 
-
-## Entwickler
-
-- [Samuel](https://www.github.com/samuelj-oe)
-- [Jona](https://www.github.com/jona_platzhalter)
-
 ## Copyright
 
 [MIT-License](https://github.com/samuelj-oe/ChickenEscapes/blob/main/LICENSE)
