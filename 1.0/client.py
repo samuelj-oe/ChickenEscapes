@@ -13,6 +13,7 @@ import websockets
 ROOT = Path(__file__).resolve().parent
 TEXTURES = ROOT / "textures"
 VERSION = (ROOT / "version.txt").read_text(encoding="utf-8").strip()
+GAMEPLAY_PROTOCOL = 2
 CHARACTER_DATA = json.loads((ROOT / "characters.json").read_text(encoding="utf-8"))
 CHARACTERS = CHARACTER_DATA["characters"]
 SETUP = json.loads((ROOT / "server" / "mapdata" / "setup.json").read_text(encoding="utf-8"))
@@ -62,17 +63,16 @@ class GameClient:
         self.game_map = None
         self.player_x = float(SETUP.get("spawnx", 75))
         self.player_y = float(SETUP.get("spawny", 150))
-        self.player_velocity_y = 0.0
-        self.player_on_ground = True
         self.player_facing_left = False
         self.attack_started = None
-        self.attack_until = 0
         self.player_action = "idle"
+        self.pending_jump = False
+        self.pending_attack = False
         self.player_id = None
         self.remote_players = {}
         self.remote_attacks = {}
         self.remote_actions = {}
-        self.last_state_sent = 0
+        self.last_input_sent = 0
         self.network_stop = None
         self.network_thread = None
         self.incoming = queue.Queue()
@@ -102,11 +102,10 @@ class GameClient:
     def run(self):
         try:
             while self.running:
-                delta_time = min(self.clock.tick(60) / 1000, 0.05)
+                self.clock.tick(60)
                 self.handle_network_events()
                 self.handle_story_timer()
-                self.update_player(delta_time)
-                self.send_player_state()
+                self.send_player_input()
                 self.handle_events()
                 self.draw()
                 self.present()
@@ -480,24 +479,10 @@ class GameClient:
             if event.key == pygame.K_ESCAPE:
                 self.screen_name = "pause"
             elif event.key in (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_SPACE):
-                actions = {
-                    pygame.K_a: "walk_left",
-                    pygame.K_d: "walk_right",
-                    pygame.K_w: "jump",
-                    pygame.K_SPACE: "attack",
-                }
-                action = actions[event.key]
-                if event.key == pygame.K_a:
-                    self.player_facing_left = True
-                elif event.key == pygame.K_d:
-                    self.player_facing_left = False
-                elif event.key == pygame.K_w and self.player_on_ground:
-                    self.player_velocity_y = 440
-                    self.player_on_ground = False
+                if event.key == pygame.K_w:
+                    self.pending_jump = True
                 elif event.key == pygame.K_SPACE:
-                    self.attack_started = pygame.time.get_ticks()
-                    self.attack_until = self.attack_started + 480
-                self.player_action = action
+                    self.pending_attack = True
 
     def append_input(self, text):
         if self.focused_input == "port" and not text.isdigit():
@@ -637,12 +622,19 @@ class GameClient:
                     await websocket.send(json.dumps({
                         "type": "join_req",
                         "version": VERSION,
+                        "gameplay_protocol": GAMEPLAY_PROTOCOL,
                         "name": self.name.strip(),
                         "character": CHARACTERS[self.character_index],
                     }))
                     response = json.loads(await asyncio.wait_for(websocket.recv(), timeout=5))
                     if response.get("type") != "join" or response.get("status") != "accept":
                         incoming.put(("error", response.get("explain", "Der Server hat die Verbindung abgelehnt.")))
+                        return
+                    if response.get("gameplay_protocol") != GAMEPLAY_PROTOCOL:
+                        incoming.put((
+                            "error",
+                            "Der Server unterstützt die serverseitige Spiellogik nicht. Bitte aktualisiere ihn.",
+                        ))
                         return
                     incoming.put(("connected", response))
                     while not stop_event.is_set():
@@ -694,8 +686,11 @@ class GameClient:
                 self.message = ""
                 self.player_x = float(SETUP.get("spawnx", 75))
                 self.player_y = float(SETUP.get("spawny", 102))
-                self.player_velocity_y = 0
-                self.player_on_ground = True
+                self.player_facing_left = False
+                self.player_action = "idle"
+                self.attack_started = None
+                self.pending_jump = False
+                self.pending_attack = False
             elif kind == "message":
                 if payload.get("type") == "map":
                     self.game_map = payload["map"]
@@ -721,10 +716,22 @@ class GameClient:
             action = player.get("action")
             previous_action = self.remote_actions.get(player_id)
             if action == "attack" and previous_action != "attack":
-                self.remote_attacks[player_id] = now
+                if player_id == self.player_id:
+                    self.attack_started = now
+                else:
+                    self.remote_attacks[player_id] = now
             elif action != "attack":
-                self.remote_attacks.pop(player_id, None)
+                if player_id == self.player_id:
+                    self.attack_started = None
+                else:
+                    self.remote_attacks.pop(player_id, None)
             self.remote_actions[player_id] = action
+        player = self.remote_players.get(self.player_id)
+        if player:
+            self.player_x = float(player.get("x", self.player_x))
+            self.player_y = float(player.get("y", self.player_y))
+            self.player_facing_left = bool(player.get("facing_left", self.player_facing_left))
+            self.player_action = player.get("action", "idle")
         active_players = set(self.remote_players)
         self.remote_attacks = {
             player_id: started
@@ -737,76 +744,37 @@ class GameClient:
             if player_id in active_players
         }
 
-    def send_player_state(self):
-        if self.screen_name != "game" or not self.player_id:
+    def send_player_input(self):
+        if not self.player_id:
             return
         now = pygame.time.get_ticks()
-        if now - self.last_state_sent < 40:
+        if now - self.last_input_sent < 40:
             return
-        self.last_state_sent = now
-        if self.player_action == "attack" and now >= self.attack_until:
-            self.player_action = "idle"
-            self.attack_started = None
+        self.last_input_sent = now
+        if self.screen_name == "game":
+            keys = pygame.key.get_pressed()
+            direction = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
+            jump = self.pending_jump
+            attack = self.pending_attack
+        else:
+            direction = 0
+            jump = False
+            attack = False
+        self.pending_jump = False
+        self.pending_attack = False
 
         self.outgoing.put({
-            "type": "player_state",
-            "state": {
-                "name": self.name.strip(),
-                "character": CHARACTERS[self.character_index],
-                "x": self.player_x,
-                "y": self.player_y,
-                "facing_left": self.player_facing_left,
-                "action": self.player_action,
-            },
+            "type": "input",
+            "direction": direction,
+            "jump": jump,
+            "attack": attack,
         })
-
-    def update_player(self, delta_time):
-        if self.screen_name != "game":
-            return
-
-        keys = pygame.key.get_pressed()
-        direction = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
-        if direction:
-            self.player_facing_left = direction < 0
-        if self.player_action != "attack":
-            self.player_action = "walk" if direction else ("jump" if not self.player_on_ground else "idle")
-        self.player_x = max(22, min(WIDTH - 22, self.player_x + direction * 230 * delta_time))
-
-        old_y = self.player_y
-        gravity = max(0.1, float(SETUP.get("gravity", 1)))
-        self.player_velocity_y -= 780 * gravity * delta_time
-        next_y = self.player_y + self.player_velocity_y * delta_time
-        landed_y = None
-        if self.player_velocity_y <= 0 and self.game_map:
-            player_half_width = 18
-            for key, platform in self.game_map.items():
-                if not key.isdigit():
-                    continue
-                x1, y1, x2, y2 = platform["size"]
-                left, right = sorted((float(x1), float(x2)))
-                surface = max(float(y1), float(y2))
-                overlaps = self.player_x + player_half_width > left and self.player_x - player_half_width < right
-                if overlaps and old_y >= surface >= next_y:
-                    landed_y = max(landed_y or surface, surface)
-
-        if landed_y is not None:
-            self.player_y = landed_y
-            self.player_velocity_y = 0
-            self.player_on_ground = True
-        else:
-            self.player_y = next_y
-            self.player_on_ground = False
-
-        if self.player_y < -40:
-            self.player_x = float(SETUP.get("spawnx", 75))
-            self.player_y = float(SETUP.get("spawny", 102))
-            self.player_velocity_y = 0
-            self.player_on_ground = True
 
     def stop_network(self):
         if self.network_stop:
             self.network_stop.set()
             self.network_stop = None
+        self.player_id = None
 
     def stop_local_server(self):
         if self.local_server and self.local_server.poll() is None:
