@@ -10,27 +10,31 @@ ChickenEscapes ist ein kleines Spiel in dem Sie sich gegen die ausgebrochenen, v
 
 ## Installation
 
-Unter Windows:
+### Windows
 
-Laden Sie unter "Releases" den neuesten Windows Installer herunter und führen sie den Installer aus. Er wird eine Verknüpfung zum Launcher auf dem Desktop erstellen.
+Führe `installer.exe` im Projektordner aus. Der Installer erstellt die virtuelle Python-Umgebung `WinVenv` und installiert die benötigten Pakete.
 
-Unter Linux:
+Starte den Launcher anschließend mit:
 
-Stellen Sie sicher, dass Sie Python 3.12 oder neuer Installiert haben.
+```powershell
+.\WinVenv\Scripts\python.exe launcher.py
+```
 
-Installieren Sie folgende Python-Module:
+### Linux
 
-- websockets
-- pygame
+Installiere Python 3.12 oder neuer. Öffne ein Terminal im Projektordner und führe den Installer aus:
 
 ```bash
-python -m pip install websockets pygame
+python3 installer.py
 ```
-Danach können Sie das den Launcher durch ausführen der Datei launcher.py starten:
+
+Der Installer erstellt die virtuelle Python-Umgebung `LxVenv` und installiert die benötigten Pakete. Starte danach den Launcher mit:
+
 ```bash
-python path/to/game/launcher.py
+./LxVenv/bin/python launcher.py
 ```
-Der Launcher wird Ihnen die Installation und das Ausführen mehreren Versionen des Spiels ermöglichen. Wichtig ist, dass die Version Ihres Spiels und dem Spiel, dem Sie beitreten möchten übereinstimmt.
+
+Der Launcher verwendet die virtuelle Umgebung auch zum Starten des Spiels. Starte ihn daher wie oben gezeigt und nicht mit einem global installierten Python. Über den Launcher kannst du die verfügbaren Spielversionen starten. Zum gemeinsamen Spielen müssen Client und Server dieselbe Spielversion verwenden.
 
 ## Screenshots
 
