@@ -1,20 +1,20 @@
 # ChickenEscapes
 
-ChickenEscapes ist ein kleines Spiel in dem Sie sich gegen die ausgebrochenen, verrücktesten Hühner verteidigen müssen.
+ChickenEscapes ist ein kleines Multiplayer-Spiel: Verteidige dich gegen die ausgebrochenen, verrückten Hühner und spiele gemeinsam mit anderen.
 
 ## Features
 
-- Multiplayer
-- Public/Self-hosted Server
-- mehrere Version durch den Launcher installieren
+- Multiplayer über öffentliche oder selbst gehostete Server
+- Spielversionen bequem über den Launcher starten
+- Windows- und Linux-Installation
 
 ## Installation
 
 ### Windows
 
-Führe `installer.exe` im Projektordner aus. Der Installer erstellt die virtuelle Python-Umgebung `WinVenv` und installiert die benötigten Pakete.
+Führe `installer.exe` im Projektordner aus. Der Installer erstellt die virtuelle Umgebung `WinVenv` und installiert die benötigten Pakete.
 
-Starte den Launcher anschließend mit:
+Starte den Launcher anschließend aus dem Projektordner:
 
 ```powershell
 .\WinVenv\Scripts\python.exe launcher.py
@@ -28,18 +28,25 @@ Installiere Python 3.12 oder neuer. Öffne ein Terminal im Projektordner und fü
 python3 installer.py
 ```
 
-Der Installer erstellt die virtuelle Python-Umgebung `LxVenv` und installiert die benötigten Pakete. Starte danach den Launcher mit:
+Der Installer erstellt die virtuelle Umgebung `LxVenv` und installiert die benötigten Pakete. Starte den Launcher danach mit:
 
 ```bash
 ./LxVenv/bin/python launcher.py
 ```
 
-Der Launcher verwendet die virtuelle Umgebung auch zum Starten des Spiels. Starte ihn daher wie oben gezeigt und nicht mit einem global installierten Python. Über den Launcher kannst du die verfügbaren Spielversionen starten. Zum gemeinsamen Spielen müssen Client und Server dieselbe Spielversion verwenden.
+Starte den Launcher mit dem Python-Interpreter aus der virtuellen Umgebung. Er verwendet dieselbe Umgebung, um das Spiel zu starten. Die Abhängigkeiten (`pygame` und `websockets`) werden vom Installer anhand der `requirements.txt` eingerichtet.
 
-## Screenshots
+## Spielen
 
-![App Screenshot](https://dummyimage.com/468x300?text=Screenshots+später!)
+Wähle im Launcher eine verfügbare Version. Für gemeinsames Spielen müssen Client und Server dieselbe Spielversion verwenden.
 
-## Copyright
+Steuerung im Spiel:
 
-[MIT-License](https://github.com/samuelj-oe/ChickenEscapes/blob/main/LICENSE)
+- **A / D**: nach links / rechts bewegen
+- **W**: springen
+- **Leertaste**: angreifen
+- **Esc**: Pausemenü öffnen
+
+## Lizenz
+
+Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
