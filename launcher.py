@@ -51,7 +51,7 @@ class Launcher:
         for ver in LAUNCH_CONF["versions"]:
             folder = LAUNCH_CONF["versions"][ver]
             if folder and ver:
-                versions.append((folder, ver))
+                versions.append((ver, folder))
         return versions
 
     def launch_version(self, folder):
