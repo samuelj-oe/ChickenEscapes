@@ -2,6 +2,8 @@ import platform
 import subprocess
 from pathlib import Path
 import sys
+import os
+import json
 
 import pygame
 
@@ -16,6 +18,9 @@ BUTTON = (255, 246, 143)
 BUTTON_HOVER = (255, 252, 190)
 TEXT = (48, 34, 8)
 MUTED = (102, 75, 24)
+LAUNCH_CONF = {}
+with open(os.path.join(ROOT, "launch_conf.json"), "r") as f:
+    LAUNCH_CONF = json.load(f)
 
 class Launcher:
     def __init__(self):
@@ -32,9 +37,10 @@ class Launcher:
         self.font = pygame.font.SysFont("Arial", 24)
         self.small_font = pygame.font.SysFont("Arial", 18)
         self.eyebrow_font = pygame.font.SysFont("Arial", 15, bold=True)
-        self.versions = self.load_launch_versions(ROOT / "versions.txt")
+        self.versions = self.load_launch_versions(os.path.join(ROOT, "versions.txt"))
         self.message = ""
         self.game_process = None
+        print(self.versions)
 
     @staticmethod
     def load_launch_versions(file_path):
@@ -42,14 +48,10 @@ class Launcher:
         if not path.exists():
             return []
         versions = []
-        with path.open("r", encoding="utf-8") as file:
-            for line in file:
-                if ":" in line:
-                    folder, display_name = line.split(":", 1)
-                    folder = folder.strip()
-                    display_name = display_name.strip()
-                    if folder and display_name:
-                        versions.append((folder, display_name))
+        for ver in LAUNCH_CONF.get("versions"):
+            folder = ver.get("folder")
+            if folder and ver:
+                versions.append((folder, ver))
         return versions
 
     def launch_version(self, folder):
