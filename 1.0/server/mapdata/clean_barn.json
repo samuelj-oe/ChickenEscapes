@@ -1,26 +1,30 @@
 {
     "name": "Clean Barn",
-    "theme": "clean_barn",
     "plattforms": 5,
-    "background": "stall.png",
+    "background": "clean_barn.png",
     "1": {
-        "texture": "stroh.png",
-        "size": [0, 72, 800, 102]
+        "texture": "clean_platform_1.png",
+        "size": [0, 72, 800, 102],
+        "texture_height": 35
     },
     "2": {
-        "texture": "stroh.png",
-        "size": [115, 190, 335, 216]
+        "texture": "clean_platform_2.png",
+        "size": [115, 190, 335, 216],
+        "texture_height": 31
     },
     "3": {
-        "texture": "stroh.png",
-        "size": [465, 285, 690, 311]
+        "texture": "clean_platform_3.png",
+        "size": [465, 285, 690, 311],
+        "texture_height": 31
     },
     "4": {
-        "texture": "stroh.png",
-        "size": [220, 385, 445, 411]
+        "texture": "clean_platform_4.png",
+        "size": [220, 385, 445, 411],
+        "texture_height": 31
     },
     "5": {
-        "texture": "stroh.png",
-        "size": [590, 475, 800, 501]
+        "texture": "clean_platform_5.png",
+        "size": [590, 475, 800, 501],
+        "texture_height": 31
     }
 }

@@ -286,12 +286,9 @@ class GameClient:
             self.screen.fill(BACKGROUND)
             self.draw_text("Lade Karte ...", (WIDTH // 2, HEIGHT // 2), INK, self.font, center=True)
             return
-        if self.game_map.get("theme") == "clean_barn":
-            self.draw_clean_barn()
-        else:
-            background_path = TEXTURES / "map" / self.game_map["background"]
-            background = pygame.transform.scale(self.image(background_path), (WIDTH, HEIGHT))
-            self.screen.blit(background, (0, 0))
+        background_path = TEXTURES / "map" / self.game_map["background"]
+        background = pygame.transform.scale(self.image(background_path), (WIDTH, HEIGHT))
+        self.screen.blit(background, (0, 0))
         for key, platform in self.game_map.items():
             if not key.isdigit():
                 continue
@@ -299,12 +296,10 @@ class GameClient:
             x1, x2 = sorted((int(x1), int(x2)))
             y1, y2 = sorted((int(y1), int(y2)))
             width, height = max(1, x2 - x1), max(1, y2 - y1)
-            if self.game_map.get("theme") == "clean_barn":
-                self.draw_clean_platform(pygame.Rect(x1, HEIGHT - y2, width, height))
-            else:
-                texture = self.image(TEXTURES / "map" / platform["texture"])
-                texture = pygame.transform.scale(texture, (width, height))
-                self.screen.blit(texture, (x1, HEIGHT - y2))
+            texture = self.image(TEXTURES / "map" / platform["texture"])
+            texture_height = int(platform.get("texture_height", height))
+            texture = pygame.transform.scale(texture, (width, texture_height))
+            self.screen.blit(texture, (x1, HEIGHT - y2))
 
         character = self.current_player_sprite()
         if not self.player_facing_left:
@@ -344,42 +339,6 @@ class GameClient:
         self.screen.blit(sprite, rect)
         label = self.small_font.render(str(player.get("name", "Player")), True, WHITE)
         self.screen.blit(label, label.get_rect(midbottom=(rect.centerx, rect.top - 5)))
-
-    def draw_clean_barn(self):
-        self.screen.fill((226, 203, 158))
-        pygame.draw.rect(self.screen, (237, 222, 190), (0, 0, WIDTH, 510))
-        for x in range(0, WIDTH, 100):
-            pygame.draw.line(self.screen, (216, 195, 160), (x, 0), (x, 510), 2)
-        pygame.draw.rect(self.screen, (130, 77, 42), (22, 0, 18, 510))
-        pygame.draw.rect(self.screen, (130, 77, 42), (WIDTH - 40, 0, 18, 510))
-        pygame.draw.rect(self.screen, (153, 94, 49), (0, 50, WIDTH, 13))
-        pygame.draw.rect(self.screen, (153, 94, 49), (0, 495, WIDTH, 15))
-
-        window = pygame.Rect(548, 86, 145, 122)
-        pygame.draw.rect(self.screen, (130, 77, 42), window.inflate(16, 16), border_radius=4)
-        pygame.draw.rect(self.screen, (162, 211, 217), window)
-        pygame.draw.line(self.screen, (250, 239, 209), window.midtop, window.midbottom, 7)
-        pygame.draw.line(self.screen, (250, 239, 209), window.midleft, window.midright, 7)
-        pygame.draw.circle(self.screen, (255, 222, 125), (window.x + 35, window.y + 32), 17)
-
-        pygame.draw.rect(self.screen, (157, 103, 55), (0, 510, WIDTH, 90))
-        for x in range(-20, WIDTH + 40, 64):
-            pygame.draw.line(self.screen, (124, 77, 43), (x, 510), (x, HEIGHT), 3)
-        for y in range(533, HEIGHT, 32):
-            pygame.draw.line(self.screen, (124, 77, 43), (0, y), (WIDTH, y), 2)
-        pygame.draw.rect(self.screen, (97, 63, 38), (0, 510, WIDTH, 6))
-
-    def draw_clean_platform(self, rect):
-        pygame.draw.rect(self.screen, (77, 54, 35), rect.move(0, 5), border_radius=5)
-        pygame.draw.rect(self.screen, (157, 100, 44), rect, border_radius=5)
-        pygame.draw.rect(self.screen, (244, 205, 112),
-                         (rect.x, rect.y, rect.width, 8), border_radius=4)
-        pygame.draw.line(self.screen, (109, 68, 34), (rect.left + 5, rect.bottom - 3),
-                         (rect.right - 5, rect.bottom - 3), 2)
-        for x in range(rect.left + 24, rect.right - 8, 34):
-            pygame.draw.line(self.screen, (194, 139, 66), (x, rect.y + 11), (x, rect.bottom - 7), 2)
-        for x in range(rect.left + 12, rect.right - 8, 50):
-            pygame.draw.circle(self.screen, (91, 61, 34), (x, rect.y + 16), 2)
 
     def player_sprite(self, image_path, remove_green=False):
         image_path = Path(image_path)
