@@ -14,13 +14,12 @@ GAMEPLAY_PROTOCOL = 2
 WIDTH, HEIGHT = 800, 600
 PLAYER_HALF_WIDTH = 18
 PLAYER_HEIGHT = 76
+settings = json.load(open(os.path.join(ROOT, "settings.json"), encoding="utf-8"))
 
 
 class Server:
     def __init__(self):
         print("[Server] Lade Servereinstellungen ...")
-        with open(os.path.join(ROOT, "settings.json"), encoding="utf-8") as settings_file:
-            settings = json.load(settings_file)
         self.port = settings["port"]
         self.hostname = settings["host"]
         self.host = None if self.hostname == "0.0.0.0" else self.hostname
