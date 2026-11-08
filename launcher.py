@@ -48,8 +48,8 @@ class Launcher:
         if not path.exists():
             return []
         versions = []
-        for ver in LAUNCH_CONF.get("versions"):
-            folder = ver.get("folder")
+        for ver in LAUNCH_CONF["versions"]:
+            folder = LAUNCH_CONF["versions"][ver]
             if folder and ver:
                 versions.append((folder, ver))
         return versions
