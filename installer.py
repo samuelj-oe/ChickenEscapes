@@ -1,6 +1,7 @@
 import venv
 import platform
 import os
+import subprocess
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 pypath = None
@@ -13,4 +14,4 @@ elif platform.system() == "Linux":
     venv.create("LxVenv", with_pip=True)
     py_path = os.path.join(ROOT, "LxVenv", "bin", "python")
 
-os.popen(f"{py_path} -m pip install -r {os.path.join(ROOT, 'requirements.txt')}")
+subprocess.run([py_path, "-m", "pip", "install", "-r", os.path.join(ROOT, "requirements.txt")])

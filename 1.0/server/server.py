@@ -167,52 +167,28 @@ class Server:
         old_y = player["y"]
         player["velocity_y"] -= 780 * self.gravity_param * delta_time
         next_y = old_y + player["velocity_y"] * delta_time
-        hit_ceiling = None
-        if player["velocity_y"] > 0:
-            old_head = old_y + PLAYER_HEIGHT
-            next_head = next_y + PLAYER_HEIGHT
+        landed_y = None
+        if player["velocity_y"] <= 0:
             for key, platform in self.map.items():
                 if not key.isdigit():
                     continue
                 x1, y1, x2, y2 = platform["size"]
                 left, right = sorted((float(x1), float(x2)))
-                underside = min(float(y1), float(y2))
+                surface = max(float(y1), float(y2))
                 overlaps = (
                     player["x"] + PLAYER_HALF_WIDTH > left
                     and player["x"] - PLAYER_HALF_WIDTH < right
                 )
-                if overlaps and old_head <= underside <= next_head:
-                    hit_ceiling = (
-                        underside if hit_ceiling is None else min(hit_ceiling, underside)
-                    )
+                if overlaps and old_y >= surface >= next_y:
+                    landed_y = max(landed_y or surface, surface)
 
-        if hit_ceiling is not None:
-            player["y"] = hit_ceiling - PLAYER_HEIGHT
+        if landed_y is not None:
+            player["y"] = landed_y
             player["velocity_y"] = 0.0
-            player["on_ground"] = False
+            player["on_ground"] = True
         else:
-            landed_y = None
-            if player["velocity_y"] <= 0:
-                for key, platform in self.map.items():
-                    if not key.isdigit():
-                        continue
-                    x1, y1, x2, y2 = platform["size"]
-                    left, right = sorted((float(x1), float(x2)))
-                    surface = max(float(y1), float(y2))
-                    overlaps = (
-                        player["x"] + PLAYER_HALF_WIDTH > left
-                        and player["x"] - PLAYER_HALF_WIDTH < right
-                    )
-                    if overlaps and old_y >= surface >= next_y:
-                        landed_y = max(landed_y or surface, surface)
-
-            if landed_y is not None:
-                player["y"] = landed_y
-                player["velocity_y"] = 0.0
-                player["on_ground"] = True
-            else:
-                player["y"] = next_y
-                player["on_ground"] = False
+            player["y"] = next_y
+            player["on_ground"] = False
 
         if player["y"] < -40:
             player["x"], player["y"] = self.spawn
