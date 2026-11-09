@@ -37,7 +37,7 @@ class Launcher:
         self.font = pygame.font.SysFont("Arial", 24)
         self.small_font = pygame.font.SysFont("Arial", 18)
         self.eyebrow_font = pygame.font.SysFont("Arial", 15, bold=True)
-        self.versions = self.load_launch_versions(os.path.join(ROOT, "versions.txt"))
+        self.versions = self.load_launch_versions(os.path.join(ROOT, "launch_conf.json"))
         self.message = ""
         self.game_process = None
         print(self.versions)
